@@ -7,6 +7,7 @@ from reuters_parser import ReutersParser
 import pprint
 import string
 import csv
+import nltk
 
 # TODO put wget in make
 
@@ -32,6 +33,9 @@ def main():
     write_aggregate_csv()
 
 def write_aggregate_csv():
+    """ Combines the already written CSV's into a larger one to avoid memory constraints 
+        associated with my 4gb memmory computer running a virtual machine :) 
+    """
     final_hash = {}
     files = os.listdir(OUTPUT_DIR)
     count = 0.0
@@ -48,12 +52,13 @@ def write_aggregate_csv():
     write_csv_from_hash(sorted(final_hash.items(), key = lambda x: x[1]), FINAL_DATA_FILENAME)
 
 def build_word_count_hash(doc):
-    """ Returns a hash mapping words count to their count """
+    """ Returns a hash mapping stemmed words count to their count """
     word_count_mapping = {}
+    stemmer = nltk.stem.SnowballStemmer("english")
     for article in doc:
         for raw_word in article[1].split():
             exclude = set(string.punctuation)
-            word = ''.join(ch for ch in raw_word if ch not in exclude)
+            word = stemmer.stem(''.join(ch for ch in raw_word if ch not in exclude))
             if word in word_count_mapping.keys():
                 word_count_mapping[word] += 1
             else:
