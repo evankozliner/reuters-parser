@@ -8,20 +8,48 @@ import pprint
 import string
 import csv
 
+# TODO put wget in make
+
 DATA_DIR = "reuters-dataset/"
+OUTPUT_DIR = "wordcounts/"
+FINAL_DATA_FILENAME = "final"
 
 def main():
-    #for f in os.listdir(DATA_DIR):
-    word_count_mapping = {}
     parser = ReutersParser()
-    for f in ["reut2-018.sgm", "reut2-000.sgm"]:
+    already_parsed = map(lambda s: s[:-14], os.listdir(OUTPUT_DIR))
+    files = filter(lambda f: f not in already_parsed, os.listdir(DATA_DIR))
+    count = 0.0
+    for f in files:
+        print "Parsing file: " + f
         with open(DATA_DIR + f) as data:
             doc = parser.parse(data)
-            word_count_mapping = build_word_count_hash(doc, word_count_mapping)
-    write_csv_from_hash(sorted(word_count_mapping.items(), key = lambda x: x[1]))
+            word_count_mapping = build_word_count_hash(doc)
+            write_csv_from_hash(sorted(word_count_mapping.items(), key = lambda x: x[1]), \
+                    OUTPUT_DIR + f)
+        count += 1
+        print "Finished parsing file: " + f
+        print str(count / float(len(files))) + "% complete."
+    write_aggregate_csv()
 
-def build_word_count_hash(doc, word_count_mapping):
+def write_aggregate_csv():
+    final_hash = {}
+    files = os.listdir(OUTPUT_DIR)
+    count = 0.0
+    for f in files:
+        with open(OUTPUT_DIR + f) as data:
+            reader = csv.reader(data)
+            for row in reader:
+                if row[0] in final_hash.keys():
+                    final_hash[row[0]] += int(row[1])
+                else:
+                    final_hash[row[0]] = int(row[1])
+        count += 1
+        print str(count/float(len(files))) + "% complete"
+    write_csv_from_hash(sorted(final_hash.items(), key = lambda x: x[1]), FINAL_DATA_FILENAME)
+
+def build_word_count_hash(doc):
     """ Returns a hash mapping words count to their count """
+    word_count_mapping = {}
     for article in doc:
         for raw_word in article[1].split():
             exclude = set(string.punctuation)
@@ -32,12 +60,15 @@ def build_word_count_hash(doc, word_count_mapping):
                 word_count_mapping[word] = 1
     return word_count_mapping
 
-def write_csv_from_hash(word_mapping):
+def write_csv_from_hash(word_mapping, corresponding_filename):
     """ Write a CSV containing words and their cross-article counts """
-    with open('words_to_count.csv', 'w') as csv_file:
+    with open(corresponding_filename + '_wordcount.csv', 'w') as csv_file:
         writer = csv.writer(csv_file, delimiter=",")
         for pair in word_mapping:
-            writer.writerow([pair[0], pair[1]])
+            try:
+                writer.writerow([pair[0], pair[1]])
+            except UnicodeError:
+                print("Unicode err, ignoring sample")
             
 if __name__ == "__main__":
     main()
