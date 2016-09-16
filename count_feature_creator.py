@@ -24,21 +24,22 @@ def get_word_features():
 def write_feature_vectors(data, features, parser):
     doc = parser.parse(data)
     stemmer = nltk.stem.SnowballStemmer("english")
+    feature_set = set(features) # optimization to prevent O(n) computation in write_feature_vector
     with open(OUTPUT_FILE, 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(features)
         for article in doc:
-            write_feature_vector(stemmer, article, features, writer)
+            write_feature_vector(stemmer, article, features, writer, feature_set)
 
-# TODO Optimize me
-def write_feature_vector(stemmer, article, features, writer):
-    feature_vector = [0 for x in features]
+def write_feature_vector(stemmer, article, features, writer, features_set):
+    feature_vector = {word: 0 for word in features}
     for raw_word in article[1].split():
         exclude = set(string.punctuation)
         word = stemmer.stem(''.join(ch for ch in raw_word if ch not in exclude))
-        if word in features:
-            feature_vector[features.index(word)] += 1
-    writer.writerow(feature_vector)
+        if word in features_set:
+            feature_vector[word] += 1
+    row = [feature_vector[word] for word in features]
+    writer.writerow(row)
 
 def main():
     print "Generating word count vector for words appearing in the corpus between " + \
