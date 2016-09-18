@@ -9,8 +9,6 @@ import string
 import csv
 import nltk
 
-# TODO put wget in make
-
 DATA_DIR = "reuters-dataset/"
 OUTPUT_DIR = "wordcounts/"
 FINAL_DATA_FILENAME = "final"
@@ -21,20 +19,19 @@ def main():
     files = filter(lambda f: f not in already_parsed, os.listdir(DATA_DIR))
     count = 0.0
     for f in files:
-        print "Parsing file: " + f
         with open(DATA_DIR + f) as data:
             doc = parser.parse(data)
             word_count_mapping = build_word_count_hash(doc)
-            write_csv_from_hash(sorted(word_count_mapping.items(), key = lambda x: x[1]), \
-                    OUTPUT_DIR + f)
+            #write_csv_from_hash(sorted(word_count_mapping.items(), key = lambda x: x[1]), \
+            #        OUTPUT_DIR + f)
+            write_csv_from_hash(word_count_mapping)
         count += 1
-        print "Finished parsing file: " + f
         print str(count / float(len(files))) + "% complete."
     write_aggregate_csv()
 
 def write_aggregate_csv():
-    """ Combines the already written CSV's into a larger one to avoid memory constraints 
-        associated with my 4gb memmory computer running a virtual machine :) 
+    """ 
+    Combines the already written CSV's into a larger one to avoid memory constraints 
     """
     final_hash = {}
     files = os.listdir(OUTPUT_DIR)
@@ -54,14 +51,16 @@ def write_aggregate_csv():
 def build_word_count_hash(doc):
     """ Returns a hash mapping stemmed words count to their count """
     word_count_mapping = {}
+    existing_words = set() # Slight optimization 
     stemmer = nltk.stem.SnowballStemmer("english")
     for article in doc:
         for raw_word in article[1].split():
             exclude = set(string.punctuation)
             word = stemmer.stem(''.join(ch for ch in raw_word if ch not in exclude))
-            if word in word_count_mapping.keys():
+            if word in existing_words:
                 word_count_mapping[word] += 1
             else:
+                existing_words.add(word)
                 word_count_mapping[word] = 1
     return word_count_mapping
 
