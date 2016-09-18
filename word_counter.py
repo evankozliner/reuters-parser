@@ -43,9 +43,9 @@ def write_aggregate_csv():
             reader = csv.reader(data)
             for row in reader:
                 if row[0] in final_words:
-                    final_words.add(row[0])
                     final_hash[row[0]] += int(row[1])
                 else:
+                    final_words.add(row[0])
                     final_hash[row[0]] = int(row[1])
         count += 1
         print str(count/float(len(files))) + "% complete"
@@ -54,7 +54,7 @@ def write_aggregate_csv():
 def build_word_count_hash(doc):
     """ Returns a hash mapping stemmed words count to their count """
     word_count_mapping = {}
-    existing_words = set() # Slight optimization 
+    existing_words = set() # Slight optimization as pythons dict.keys() method returns list
     stemmer = nltk.stem.SnowballStemmer("english")
     for article in doc:
         for raw_word in article[1].split():
