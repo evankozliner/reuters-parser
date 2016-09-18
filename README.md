@@ -1,4 +1,5 @@
-# reuters-parser
+
+Note: This readme is in Markdown and it best viewed in a markdown editor
 
 *The project is split up into several parts: To see the full functionality run them in this order*
 
