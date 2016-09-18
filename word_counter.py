@@ -24,7 +24,7 @@ def main():
             word_count_mapping = build_word_count_hash(doc)
             #write_csv_from_hash(sorted(word_count_mapping.items(), key = lambda x: x[1]), \
             #        OUTPUT_DIR + f)
-            write_csv_from_hash(word_count_mapping)
+            write_csv_from_hash(word_count_mapping, OUTPUT_DIR + f)
         count += 1
         print str(count / float(len(files))) + "% complete."
     write_aggregate_csv()
@@ -33,20 +33,23 @@ def write_aggregate_csv():
     """ 
     Combines the already written CSV's into a larger one to avoid memory constraints 
     """
+    print "Combining smaller CSV's into final wordcount..."
     final_hash = {}
     files = os.listdir(OUTPUT_DIR)
     count = 0.0
+    final_words = set()
     for f in files:
         with open(OUTPUT_DIR + f) as data:
             reader = csv.reader(data)
             for row in reader:
-                if row[0] in final_hash.keys():
+                if row[0] in final_words:
+                    final_words.add(row[0])
                     final_hash[row[0]] += int(row[1])
                 else:
                     final_hash[row[0]] = int(row[1])
         count += 1
         print str(count/float(len(files))) + "% complete"
-    write_csv_from_hash(sorted(final_hash.items(), key = lambda x: x[1]), FINAL_DATA_FILENAME)
+    write_csv_from_hash(dict(sorted(final_hash.items(), key = lambda x: x[1])), FINAL_DATA_FILENAME)
 
 def build_word_count_hash(doc):
     """ Returns a hash mapping stemmed words count to their count """
@@ -66,11 +69,11 @@ def build_word_count_hash(doc):
 
 def write_csv_from_hash(word_mapping, corresponding_filename):
     """ Write a CSV containing words and their cross-article counts """
-    with open(corresponding_filename + '_wordcount.csv', 'w') as csv_file:
+    with open(corresponding_filename + '_wordcount.csv', 'w+') as csv_file:
         writer = csv.writer(csv_file, delimiter=",")
-        for pair in word_mapping:
+        for key in word_mapping:
             try:
-                writer.writerow([pair[0], pair[1]])
+                writer.writerow([key, word_mapping[key]])
             except UnicodeError:
                 print("Unicode err, ignoring sample")
             
