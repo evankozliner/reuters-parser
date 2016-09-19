@@ -6,7 +6,7 @@ import nltk
 from reuters_parser import ReutersParser
 import word_counter
 
-MIN_CORPUS_COUNT = 100
+MIN_CORPUS_COUNT = 500
 MAX_CORPUS_COUNT = 5000
 OUTPUT_FILE = "feature-vectors/wordcount_feature_vectors.csv"
 DATA_DIR = "reuters-dataset/"
