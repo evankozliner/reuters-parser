@@ -1,9 +1,10 @@
+# Usage Tips
 
 Note: This readme is in Markdown and it best viewed in a markdown editor
 
 *The project is split up into several parts: To see the full functionality run them in this order*
 
-1. *The Makefile:* Downloads the data and makes the necessary directories. Run using `make`
+1. *The Makefile:* Downloads the data, makes the necessary directories and runs each of the feature vector creators. Run using `make`, or run a single portion using `make directories` or `make data` or `make feature_vectors`. To resart, run `make clean`.
 
 2. *The wordcount file generator:* Writes the `final_wordcount.csv` file which is used to take words b etween some frequency range. Run using `python word_counter.py`
 

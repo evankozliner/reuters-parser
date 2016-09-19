@@ -49,11 +49,12 @@ def record_vector(x,y, header):
     print "Done!"
 
 def main():
+    print "Building TFIDF vector"
     parser = ReutersParser()
     files = os.listdir(DATA_DIR)
     count = 0.0
     docs = []
-    print "Parsing sgms "
+    print "Parsing sgms for TFIDF feature vector..."
     for filename in files:
         docs = docs + list(parser.parse(open(DATA_DIR + filename, 'rb')))
     x, y, header = create_tfidf_training_data(docs)

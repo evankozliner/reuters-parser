@@ -23,6 +23,7 @@ def show_bar_graph_by_hash(h, xlabel, ylabel):
     plt.show()
 
 def main():
+    print "Building histogram of word counts"
     with open(WORDCOUNT_FILE, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         wordcount_map = {}

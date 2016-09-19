@@ -14,6 +14,7 @@ OUTPUT_DIR = "wordcounts/"
 FINAL_DATA_FILENAME = "final"
 
 def main():
+    print "Counting words in the corpus and outputting them to final_wordcount.csv" 
     parser = ReutersParser()
     already_parsed = map(lambda s: s[:-14], os.listdir(OUTPUT_DIR))
     files = filter(lambda f: f not in already_parsed, os.listdir(DATA_DIR))
