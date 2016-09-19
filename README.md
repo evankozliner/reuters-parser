@@ -1,6 +1,7 @@
 # Usage Tips
 
 Note: This readme is in Markdown and it best viewed in a markdown editor
+Note: The feature vectors can be seen in the path /home/7/kozliner/Documents/reuters-parser/feature-vectors on the CSE system
 
 *The project is split up into several parts: To see the full functionality run them in this order*
 

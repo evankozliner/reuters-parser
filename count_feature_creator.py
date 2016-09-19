@@ -55,7 +55,7 @@ def main():
             print "Writing training data from " + f
             write_feature_vectors(data, features, parser)
         count += 1
-        print str(count/len(files)) + "% complete"
+        print str(count/len(files) * 100) + "% complete"
 
 if __name__ == "__main__":
     main()

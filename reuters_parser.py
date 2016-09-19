@@ -2,7 +2,6 @@
     https://www.quantstart.com/articles/Supervised-Learning-for-Document-Classification-with-Scikit-Learn
 """
 
-import html
 import re
 from HTMLParser import HTMLParser
 

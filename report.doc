@@ -10,6 +10,7 @@ Word count vector:
 	During this process it was important utilize python's 'set' data structure for the feature list (AKA the list of words that was tracked) instead of the traditional list in order to get the O(1) lookup associated with hashing. After timing the code in an ad-hoc manner this appeared to speed the process up about a factor 10. 
 	Another challenge was the small memory of the computer used. To mitigate the memory requirements associated with building a hash of all the words in the corpus to their counts CSV's were written per SGM file and then aggregated at was CSV's had been written for each SGM. 
 	Stemming was also used to prevent word duplication. This was done as words were read from the corpus immediately after punctuation was removed. 
+	It's also worth noting that samples that provide unicode casting errors are simply ignores. Few of these are present in this dataset however. 
 
 TFIDF vector:
 	To build the TFIDF feature vector the sklearn built-in TF/IDF was used. To pass data into the built in method the sgms needed re-parsed and concatenated into a larger corpus. That corpus was stemmed and then filtered based on the same word frequency used in the word count vector. An experiment was done where the TF/IDF vector was created without any filtering, and the run time was on the order of 20 times slower on my machine. 

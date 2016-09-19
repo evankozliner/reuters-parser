@@ -27,7 +27,7 @@ def main():
             #        OUTPUT_DIR + f)
             write_csv_from_hash(word_count_mapping, OUTPUT_DIR + f)
         count += 1
-        print str(count / float(len(files))) + "% complete."
+        print str(count / float(len(files)) * 100) + "% complete."
     write_aggregate_csv()
 
 def write_aggregate_csv():
@@ -49,7 +49,7 @@ def write_aggregate_csv():
                     final_words.add(row[0])
                     final_hash[row[0]] = int(row[1])
         count += 1
-        print str(count/float(len(files))) + "% complete"
+        print str(count/float(len(files)) * 100) + "% complete"
     write_csv_from_hash(dict(sorted(final_hash.items(), key = lambda x: x[1])), FINAL_DATA_FILENAME)
 
 def build_word_count_hash(doc):
