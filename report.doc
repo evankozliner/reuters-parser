@@ -1,0 +1,16 @@
+﻿Data Mining Assignment 1
+Evan Kozliner
+	
+Approach for building feature vectors:
+	Two feature vectors were built: One using the count of words between some range in the corpus, and another that was a generic TFIDF feature vector also filtered based on word frequency. 
+	Both feature vectors utilized a relatively simple parser that I found for the Reuters dataset online. The parser returns tuples of the topics and body of the document. In both feature vectors the topics were written to CSV's in the following format: The first row contains the header describing the features, the first column of every row following the initial row is a list of topics separated by a bar “|”. The following columns are the values of each feature. 
+
+Word count vector:
+	The word count vector was assembled by first counting the occurrences of each word in the corpus in general. This was written to a CSV file called 'final_wordcount.csv' in the 'feature-vectors' directory. Then the frequencies of the words were plotted on a histogram to reveal the “long tail” shape of the words in the corpus. Using this graph and the CSV the range 500 to 5000 was selected as to filter words with little importance or too much frequency while keeping in mind speed. These values can be edited easily in the 'count_feature_creator.py'. The word to word count in the corpus mapping was stored in 'final_wordco­unt.csv'. Finally the feature vector was created by putting the words within the 500 to 5000 frequency range into a list and counting the frequencies of those words at the document level. 
+	During this process it was important utilize python's 'set' data structure for the feature list (AKA the list of words that was tracked) instead of the traditional list in order to get the O(1) lookup associated with hashing. After timing the code in an ad-hoc manner this appeared to speed the process up about a factor 10. 
+	Another challenge was the small memory of the computer used. To mitigate the memory requirements associated with building a hash of all the words in the corpus to their counts CSV's were written per SGM file and then aggregated at was CSV's had been written for each SGM. 
+	Stemming was also used to prevent word duplication. This was done as words were read from the corpus immediately after punctuation was removed. 
+
+TFIDF vector:
+	To build the TFIDF feature vector the sklearn built-in TF/IDF was used. To pass data into the built in method the sgms needed re-parsed and concatenated into a larger corpus. That corpus was stemmed and then filtered based on the same word frequency used in the word count vector. An experiment was done where the TF/IDF vector was created without any filtering, and the run time was on the order of 20 times slower on my machine. 
+
