@@ -44,7 +44,10 @@ def record_vector(x,y, header):
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow([""] + header)
         for i in xrange(len(Y)):
-            row = [Y[i]] + x[i].toarray().tolist()
+            row = x[i].toarray().tolist()[0]
+            print type(row)
+            row.insert(0, Y[i])
+            print row
             writer.writerow(row)
     print "Done!"
 
